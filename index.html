@@ -1,1 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Happy Birthday! ✨</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
 
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Floating Particles Canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Floating Ambient Elements -->
+  <div class="floating-bg-elements" id="floating-bg"></div>
+
+  <!-- Background Music -->
+  <audio id="bg-music" src="a-cheerful-ukulele-waltz.mp3" preload="auto" autoplay loop></audio>
+
+  <!-- 1. LOADING SCREEN -->
+  <div id="loading-screen" class="screen">
+    <div class="loader-content">
+      <div class="sparkle-spinner">✨</div>
+      <p class="loading-text">Preparing something special... ✨</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main id="main-content" class="hidden">
+
+    <!-- 2. WELCOME SCREEN -->
+    <section id="welcome-section" class="hero-section">
+      <div class="glass-card hero-card">
+        <span class="badge">A Special Surprise</span>
+        <h1 class="hero-title">Happy Birthday, <span class="highlight-name">[NAME]</span> 🎂</h1>
+        <p class="hero-subtitle">Today is all about you ❤️</p>
+        <button id="start-btn" class="primary-btn glow-effect">
+          <span>Tap to Begin 🎁</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- CONTENT WRAPPER (Revealed on click) -->
+    <div id="experience-wrapper" class="hidden-flow">
+
+      <!-- 3. BIRTHDAY SURPRISE (GIFT BOX) -->
+      <section class="section-container" id="gift-section">
+        <h2 class="section-title">A Gift For You 🎁</h2>
+        <div class="gift-box-container">
+          <div class="gift-box" id="gift-box">
+            <div class="gift-ribbon-v"></div>
+            <div class="gift-ribbon-h"></div>
+            <div class="gift-bow">🎀</div>
+            <div class="gift-lid"></div>
+            <div class="gift-body"></div>
+            <p class="gift-hint">Tap to open!</p>
+          </div>
+
+          <div class="glass-card gift-message-card hidden-card" id="gift-message">
+            <div class="card-sparkle">✨</div>
+            <h3>To Someone Special ❤️</h3>
+            <p class="gift-text">
+              Today isn't just another day. It's the day someone truly special came into this world. 
+              May this new chapter bring you happiness, success, peace, laughter, and countless beautiful memories. Happy Birthday! ❤️
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. PHOTO MEMORIES GALLERY -->
+      <section class="section-container" id="gallery-section">
+        <h2 class="section-title">Precious Memories 📸</h2>
+        <p class="section-subtitle">Swipe or tap to view photos</p>
+        
+        <div class="gallery-scroll-wrapper">
+          <div class="gallery-grid">
+            <!-- Photo 1 -->
+            <div class="polaroid" data-src="images/IMG-20260813-WA0365.jpg" data-caption="A True Role Model & Guide 🌟">
+              <div class="polaroid-img-wrapper">
+                <img src="images/IMG-20260813-WA0365.jpg" alt="Memory 1" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500&q=80'">
+              </div>
+              <p class="caption">A True Role Model & Guide 🌟</p>
+            </div>
+
+            <!-- Photo 2 -->
+            <div class="polaroid" data-src="images/IMG-20260818-WA0470.jpg" data-caption="Endless Wisdom & Great Laughs 🍻">
+              <div class="polaroid-img-wrapper">
+                <img src="images/IMG-20260818-WA0470.jpg" alt="Memory 2" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=500&q=80'">
+              </div>
+              <p class="caption">Endless Wisdom & Great Laughs 🍻</p>
+            </div>
+
+            <!-- Photo 3 -->
+            <div class="polaroid" data-src="images/IMG-20260928-WA0279.jpg" data-caption="To the Coolest Uncle Ever 😎">
+              <div class="polaroid-img-wrapper">
+                <img src="images/IMG-20260928-WA0279.jpg" alt="Memory 3" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&q=80'">
+              </div>
+              <p class="caption">To the Coolest Uncle Ever 😎</p>
+            </div>
+
+            <!-- Photo 4 -->
+            <div class="polaroid" data-src="images/IMG-20260928-WA0280.jpg" data-caption="Cheers to More Blessing & Success 🥂">
+              <div class="polaroid-img-wrapper">
+                <img src="images/IMG-20260928-WA0280.jpg" alt="Memory 4" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&q=80'">
+              </div>
+              <p class="caption">Cheers to More Blessing & Success 🥂</p>
+            </div>
+
+            <!-- Photo 5 -->
+            <div class="polaroid" data-src="images/IMG-20260928-WA0284.jpg" data-caption="Forever Grateful For Having An Uncle Like You ❤️">
+              <div class="polaroid-img-wrapper">
+                <img src="images/IMG-20260928-WA0284.jpg" alt="Memory 5" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=500&q=80'">
+              </div>
+              <p class="caption">Forever Grateful For Having An Uncle Like You ❤️</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIGHTBOX MODAL -->
+      <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+          <img id="lightbox-img" src="" alt="Enlarged photo">
+          <p id="lightbox-caption"></p>
+        </div>
+      </div>
+
+      <!-- 5. PERSONAL BIRTHDAY MESSAGE (TYPING) -->
+      <section class="section-container" id="message-section">
+        <div class="glass-card letter-card">
+          <h2>💌 A Little Message For You</h2>
+          <div class="typing-container">
+            <p id="typewriter-text"></p>
+            <span class="cursor">|</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. BIRTHDAY CAKE -->
+      <section class="section-container" id="cake-section">
+        <h2 class="section-title" id="wish-title">Make a Wish 🎂</h2>
+        <p class="section-subtitle">Tap the candles to blow them out!</p>
+        
+        <div class="cake-container">
+          <div class="cake" id="cake">
+            <!-- Candles -->
+            <div class="candles">
+              <div class="candle"><div class="flame"></div></div>
+              <div class="candle"><div class="flame"></div></div>
+              <div class="candle"><div class="flame"></div></div>
+            </div>
+            <!-- Cake Layers -->
+            <div class="top-layer"></div>
+            <div class="middle-layer"></div>
+            <div class="bottom-layer"></div>
+            <div class="plate"></div>
+          </div>
+        </div>
+        <div id="wish-status" class="wish-status hidden-text">✨ Wish made! May all your dreams come true! ✨</div>
+      </section>
+
+      <!-- 7. MUSIC PLAYER -->
+      <section class="section-container" id="music-section">
+        <div class="glass-card music-card">
+          <div class="music-header">
+            <div class="disc-icon" id="disc-icon">🎵</div>
+            <div class="song-info">
+              <div class="song-title" id="song-title">A Cheerful Ukulele Waltz</div>
+              <div class="song-artist">Now playing in the background ✨</div>
+            </div>
+          </div>
+
+          <div class="controls-row">
+            <button id="play-pause-btn" class="icon-btn" aria-label="Play or Pause">▶️</button>
+            <div class="progress-wrapper">
+              <input type="range" id="seek-bar" value="0" min="0" max="100">
+              <div class="time-display"><span id="curr-time">0:00</span> / <span id="dur-time">0:00</span></div>
+            </div>
+          </div>
+
+          <div class="volume-row">
+            <span>🔊</span>
+            <input type="range" id="volume-bar" value="100" min="0" max="100">
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. COUNTDOWN -->
+      <section class="section-container" id="countdown-section">
+        <h2 class="section-title">Counting down to your special day 🎉</h2>
+        <div class="countdown-grid" id="countdown-grid">
+          <div class="glass-card count-box">
+            <span class="count-num" id="cd-days">00</span>
+            <span class="count-label">Days</span>
+          </div>
+          <div class="glass-card count-box">
+            <span class="count-num" id="cd-hours">00</span>
+            <span class="count-label">Hours</span>
+          </div>
+          <div class="glass-card count-box">
+            <span class="count-num" id="cd-minutes">00</span>
+            <span class="count-label">Minutes</span>
+          </div>
+          <div class="glass-card count-box">
+            <span class="count-num" id="cd-seconds">00</span>
+            <span class="count-label">Seconds</span>
+          </div>
+        </div>
+        <div id="birthday-alert" class="birthday-alert hidden">IT'S YOUR BIRTHDAY! 🎉🎂❤️</div>
+      </section>
+
+      <!-- 9. FINAL SURPRISE & REPLAY -->
+      <section class="section-container final-section" id="final-section">
+        <div class="glass-card final-card">
+          <h1 class="final-title">Happy Birthday, <span class="highlight-name">[NAME]</span> ❤️</h1>
+          <p class="final-message">
+            May your new chapter be filled with beautiful moments, big achievements, genuine happiness, and unforgettable memories.
+          </p>
+          <button id="replay-btn" class="primary-btn glow-effect">Replay the Surprise ✨</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
