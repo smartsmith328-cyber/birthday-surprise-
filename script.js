@@ -8,12 +8,12 @@ const CONFIG = {
   // 2. Target Birthday Date (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS)
   birthdayDate: "2026-10-01T00:00:00",
 
-  // 3. Typewriter Personal Message
-  typedMessage: `From the moment you entered my life, everything became brighter and warmer.
+  // 3. Typewriter Personal Message (Combined Master Message)
+  typedMessage: `To a remarkable mentor, guide, and incredible uncle—Happy Birthday, Dr. Chizubem Benson! 🌟
 
-Thank you for bringing so much happiness, laughter, and sweetness into every single day. 
+Thank you for your endless wisdom, support, and the great example you set for us every single day. Your dedication, warmth, and laughter make every moment with family special, and having an uncle as wise, supportive, and dependable as you is a true blessing.
 
-I hope your birthday is as wonderful, beautiful, and amazing as you are. Keep shining bright! ✨❤️`,
+May God bless your new age with divine grace, distinguished success, robust health, total peace, and extraordinary achievements. Cheers to long life, prosperity, and a wonderful celebration! 🥂✨`,
 
   // 4. Floating ambient emojis
   floatingEmojis: ['🎈', '✨', '💖', '🎉', '🌸', '⭐']
@@ -59,30 +59,70 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMusicPlayer();
   setupCountdown();
   setupReplay();
+  setupScrollTypewriter(); // Triggers typewriter when scrolled into view
 });
 
 /* ==========================================================================
    1. WELCOME & FLOW CONTROL
    ========================================================================== */
+let musicUnlocked = false;
+
+function unlockMusic() {
+  const audio = document.getElementById('bg-music');
+  if (!audio || musicUnlocked) return;
+
+  audio.muted = false;
+  audio.loop = true;
+  audio.volume = 0.8;
+
+  const playPromise = audio.play();
+
+  if (playPromise && typeof playPromise.then === 'function') {
+    playPromise
+      .then(() => {
+        musicUnlocked = true;
+        syncMusicUi();
+      })
+      .catch(() => {
+        // Browser still blocked; wait for direct user interaction
+      });
+  } else {
+    musicUnlocked = true;
+    syncMusicUi();
+  }
+}
+
+function syncMusicUi() {
+  const audio = document.getElementById('bg-music');
+  const playBtn = document.getElementById('play-pause-btn');
+  const disc = document.getElementById('disc-icon');
+
+  if (!audio || !playBtn || !disc) return;
+
+  const isPlaying = !audio.paused && !audio.muted;
+  playBtn.textContent = isPlaying ? '⏸️' : '▶️';
+  disc.classList.toggle('spinning', isPlaying);
+}
+
 function setupWelcomeFlow() {
   const startBtn = document.getElementById('start-btn');
   const wrapper = document.getElementById('experience-wrapper');
 
   startBtn.addEventListener('click', () => {
+    unlockMusic();
     triggerConfetti(3000);
-    playAudioOnceUserGesture();
     wrapper.classList.add('show-flow');
     
     // Smooth scroll to Gift section
     setTimeout(() => {
       document.getElementById('gift-section').scrollIntoView({ behavior: 'smooth' });
     }, 400);
-
-    // Start Typing Effect once scrolled into view
-    setTimeout(() => {
-      startTypewriter();
-    }, 1500);
   });
+
+  // Global listeners for any tap/click to unlock music
+  document.addEventListener('pointerdown', unlockMusic, { passive: true });
+  document.addEventListener('touchstart', unlockMusic, { passive: true });
+  document.addEventListener('click', unlockMusic, { passive: true });
 }
 
 /* ==========================================================================
@@ -93,8 +133,9 @@ function setupGiftBox() {
   const giftMessage = document.getElementById('gift-message');
 
   giftBox.addEventListener('click', () => {
+    unlockMusic();
+
     if (!giftBox.classList.contains('open')) {
-      playAudioOnceUserGesture();
       giftBox.classList.add('open');
       triggerConfetti(2000);
       setTimeout(() => {
@@ -137,22 +178,41 @@ function setupGalleryLightbox() {
 }
 
 /* ==========================================================================
-   4. TYPEWRITER EFFECT
+   4. SCROLL-TRIGGERED TYPEWRITER EFFECT
    ========================================================================== */
 let typewriterStarted = false;
-function startTypewriter() {
-  if (typewriterStarted) return;
-  typewriterStarted = true;
 
+function setupScrollTypewriter() {
+  const messageSection = document.getElementById('message-section');
+  if (!messageSection) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !typewriterStarted) {
+        typewriterStarted = true;
+        startTypewriter();
+        observer.unobserve(entry.target); // Stop observing once started
+      }
+    });
+  }, {
+    threshold: 0.3 // Starts when 30% of the section is visible on screen
+  });
+
+  observer.observe(messageSection);
+}
+
+function startTypewriter() {
   const target = document.getElementById('typewriter-text');
   const text = CONFIG.typedMessage;
   let index = 0;
+
+  target.textContent = ''; // Clear existing text before typing
 
   function typeNextChar() {
     if (index < text.length) {
       target.textContent += text.charAt(index);
       index++;
-      setTimeout(typeNextChar, 40 + Math.random() * 30);
+      setTimeout(typeNextChar, 35 + Math.random() * 25);
     }
   }
 
@@ -181,19 +241,6 @@ function setupCakeInteraction() {
 /* ==========================================================================
    6. MUSIC PLAYER CONTROLS
    ========================================================================== */
-function playAudioOnceUserGesture() {
-  const audio = document.getElementById('bg-music');
-  if (!audio) return;
-
-  if (audio.paused) {
-    audio.loop = true;
-    const playPromise = audio.play();
-    if (playPromise) {
-      playPromise.catch(() => {});
-    }
-  }
-}
-
 function setupMusicPlayer() {
   const audio = document.getElementById('bg-music');
   const playBtn = document.getElementById('play-pause-btn');
@@ -203,32 +250,39 @@ function setupMusicPlayer() {
   const durTimeEl = document.getElementById('dur-time');
   const disc = document.getElementById('disc-icon');
 
+  if (!audio || !playBtn) return;
+
   function formatTime(secs) {
     const m = Math.floor(secs / 60);
     const s = Math.floor(secs % 60);
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   }
 
-  playBtn.addEventListener('click', () => {
+  const toggleMusic = () => {
+    if (!audio) return;
+
     if (audio.paused) {
-      playAudioOnceUserGesture();
-      playBtn.textContent = '⏸️';
-      disc.classList.add('spinning');
+      unlockMusic();
+      if (!audio.paused) {
+        syncMusicUi();
+      }
     } else {
       audio.pause();
-      playBtn.textContent = '▶️';
-      disc.classList.remove('spinning');
+      syncMusicUi();
     }
+  };
+
+  playBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    toggleMusic();
   });
 
   audio.addEventListener('play', () => {
-    playBtn.textContent = '⏸️';
-    disc.classList.add('spinning');
+    syncMusicUi();
   });
 
   audio.addEventListener('pause', () => {
-    playBtn.textContent = '▶️';
-    disc.classList.remove('spinning');
+    syncMusicUi();
   });
 
   audio.addEventListener('timeupdate', () => {
@@ -249,9 +303,8 @@ function setupMusicPlayer() {
     audio.volume = volumeBar.value / 100;
   });
 
-  if (audio) {
-    audio.volume = 0.8;
-  }
+  audio.volume = 0.8;
+  syncMusicUi();
 }
 
 /* ==========================================================================
@@ -299,7 +352,7 @@ function setupCountdown() {
 function setupReplay() {
   const replayBtn = document.getElementById('replay-btn');
   replayBtn.addEventListener('click', () => {
-    playAudioOnceUserGesture();
+    unlockMusic();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     triggerConfetti(3000);
   });
@@ -426,5 +479,4 @@ function triggerConfetti(durationMs = 2500) {
   }
 
   animateConfetti();
-        }
-                 
+}
